@@ -1,7 +1,6 @@
-# app/forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DateField
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -11,6 +10,14 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Log In')
+    remember_me = SubmitField('Remember Me')
+    submit = SubmitField('Login')
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    bio = TextAreaField('Bio', validators=[Length(min=0, max=256)])
+    location = StringField('Location', validators=[Length(min=0, max=100)])  # New field for location
+    birthdate = DateField('Birthdate', format='%Y-%m-%d')  # New field for birthdate using a date picker
+    submit = SubmitField('Update Profile')

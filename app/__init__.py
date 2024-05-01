@@ -2,32 +2,23 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_dance.contrib.google import make_google_blueprint
+from config import Config
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key_here'  # Set a secret key for security purposes
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  # Configure your database URI
+app.config.from_object(Config)
 
-# Initialize SQLAlchemy
+# Database setup
 db = SQLAlchemy(app)
 
-# Initialize Flask-Login
+# Login manager setup
 login_manager = LoginManager(app)
-login_manager.login_view = 'google.login'  # Redirect to Google login if authentication is required
+login_manager.login_view = 'login'
 
-# Setup Google OAuth
-app.config['GOOGLE_OAUTH_CLIENT_ID'] = 'your_google_client_id_here'
-app.config['GOOGLE_OAUTH_CLIENT_SECRET'] = 'your_google_client_secret_here'
-google_bp = make_google_blueprint(scope=["profile", "email"], redirect_to='after_login')  # Define the endpoint to redirect after login
+# Google OAuth setup
+google_bp = make_google_blueprint(client_id="your-google-client-id",
+                                  client_secret="your-google-client-secret",
+                                  scope=["profile", "email"],
+                                  redirect_to='google_login')
 app.register_blueprint(google_bp, url_prefix="/login")
 
-# Import models to ensure they are known to Flask-Migrate
-from app import models
-
-# Flask-Login configuration
-@login_manager.user_loader
-def load_user(user_id):
-    from app.models import User
-    return User.query.get(int(user_id))
-
-# Routes need to be imported after initializing components to avoid circular imports
-from app import routes
+from app import routes, models
