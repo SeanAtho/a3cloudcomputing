@@ -3,8 +3,8 @@ from app import app, db
 from app.forms import RegistrationForm, LoginForm, EditProfileForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_dance.contrib.google import google
-from flask_dance.contrib.google import make_google_blueprint
+from flask_dance.contrib.google import make_google_blueprint, google
+from werkzeug.urls import url_parse
 
 # Setting up Google OAuth
 google_bp = make_google_blueprint(client_id="your-google-client-id",
@@ -38,7 +38,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -59,11 +59,13 @@ def logout():
 def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
+        current_user.username = form.username.data
         current_user.bio = form.bio.data
         db.session.commit()
         flash('Your profile has been updated.')
         return redirect(url_for('index'))
     elif request.method == 'GET':
+        form.username.data = current_user.username
         form.bio.data = current_user.bio
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
@@ -71,9 +73,9 @@ def edit_profile():
 def google_login():
     if not google.authorized:
         return redirect(url_for('google.login'))
-    response = google.get('/oauth2/v2/userinfo')
-    if response.ok:
-        account_info = response.json()
+    resp = google.get('/oauth2/v2/userinfo')
+    if resp.ok:
+        account_info = resp.json()
         user = User.query.filter_by(email=account_info['email']).first()
         if not user:
             user = User(username=account_info['name'], email=account_info['email'])
