@@ -1,38 +1,38 @@
 <!-- app/templates/register.html -->
 {% extends "base.html" %}
 {% block content %}
-<form action="{{ url_for('register') }}" method="post">
+<form action="{{ url_for('register') }}" method="post" class="registration-form">
     {{ form.hidden_tag() }}
-    <div>
+    <div class="form-group">
         {{ form.username.label }}<br>
-        {{ form.username(size=32) }}
+        {{ form.username(size=32, class='form-control') }}
         {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
+        <span style="color: red;" aria-live="polite">{{ error }}</span>
         {% endfor %}
     </div>
-    <div>
+    <div class="form-group">
         {{ form.email.label }}<br>
-        {{ form.email(size=32) }}
+        {{ form.email(size=32, class='form-control') }}
         {% for error in form.email.errors %}
-        <span style="color: red;">{{ error }}</span>
+        <span style="color: red;" aria-live="polite">{{ error }}</span>
         {% endfor %}
     </div>
-    <div>
+    <div class="form-group">
         {{ form.password.label }}<br>
-        {{ form.password(size=32) }}
+        {{ form.password(size=32, class='form-control') }}
         {% for error in form.password.errors %}
-        <span style="color: red;">{{ error }}</span>
+        <span style="color: red;" aria-live="polite">{{ error }}</span>
         {% endfor %}
     </div>
-    <div>
+    <div class="form-group">
         {{ form.password2.label }}<br>
-        {{ form.password2(size=32) }}
+        {{ form.password2(size=32, class='form-control') }}
         {% for error in form.password2.errors %}
-        <span style="color: red;">{{ error }}</span>
+        <span style="color: red;" aria-live="polite">{{ error }}</span>
         {% endfor %}
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class='btn btn-primary') }}
     </div>
 </form>
 {% endblock %}

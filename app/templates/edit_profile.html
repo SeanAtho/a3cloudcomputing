@@ -1,19 +1,19 @@
-<!-- edit_profile.html -->
+<!-- app/templates/edit_profile.html -->
 {% extends "base.html" %}
 {% block content %}
 <h1>Edit Profile</h1>
-<form action="" method="post">
+<form action="{{ url_for('edit_profile') }}" method="post" class="profile-form">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.username.label }}<br>
-        {{ form.username(size=32) }}<br>
+    <div class="form-group">
+        {{ form.username.label(class='form-label') }}<br>
+        {{ form.username(size=32, class='form-control') }}<br>
     </div>
-    <div>
-        {{ form.bio.label }}<br>
-        {{ form.bio(cols=40, rows=10) }}<br>
+    <div class="form-group">
+        {{ form.bio.label(class='form-label') }}<br>
+        {{ form.bio(cols=40, rows=10, class='form-control') }}<br>
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class='btn btn-primary') }}
     </div>
 </form>
 {% endblock %}
