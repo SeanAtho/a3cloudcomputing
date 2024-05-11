@@ -1,17 +1,10 @@
 from flask import render_template, redirect, url_for, flash, request
-from app import app, db
+from app import app, db, google_bp
 from app.forms import RegistrationForm, LoginForm, EditProfileForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_dance.contrib.google import make_google_blueprint, google
 from werkzeug.urls import url_parse
-
-# Setting up Google OAuth
-google_bp = make_google_blueprint(client_id="your-google-client-id",
-                                  client_secret="your-google-client-secret",
-                                  offline=True,
-                                  scope=["profile", "email"])
-app.register_blueprint(google_bp, url_prefix="/login")
+from flask_dance.contrib.google import google
 
 @app.route('/')
 @app.route('/index')

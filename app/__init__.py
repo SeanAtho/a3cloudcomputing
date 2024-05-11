@@ -15,10 +15,12 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # Google OAuth setup
-google_bp = make_google_blueprint(client_id="your-google-client-id",
-                                  client_secret="your-google-client-secret",
-                                  scope=["profile", "email"],
-                                  redirect_to='google_login')
+google_bp = make_google_blueprint(
+    client_id=app.config['GOOGLE_CLIENT_ID'],
+    client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+    scope=["profile", "email"],
+    redirect_to='google_login'
+)
 app.register_blueprint(google_bp, url_prefix="/login")
 
 from app import routes, models
