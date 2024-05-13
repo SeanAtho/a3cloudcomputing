@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<article>
+    <h2>{{ post.author.username }} says:</h2>
+    <p>{{ post.body }}</p>
+</article>
+<section>
+    <h3>Comments:</h3>
+    {% for comment in comments %}
+        <div>
+            <strong>{{ comment.author.username }}</strong>
+            <p>{{ comment.body }}</p>
+        </div>
+    {% endfor %}
+    <h4>Add a comment:</h4>
+    <form action="{{ url_for('comment', post_id=post.id) }}" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.body.label }}
+        {{ form.body(size=32) }}
+        {{ form.submit() }}
+    </form>
+</section>
+{% endblock %}

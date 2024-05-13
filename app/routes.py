@@ -1,10 +1,9 @@
-# routes.py
 from flask import render_template, flash, redirect, url_for, request, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app import db, photos
-from app.models import User, Post
-from app.forms import RegistrationForm, LoginForm
+from app.models import User, Post, Comment
+from app.forms import RegistrationForm, LoginForm, CommentForm
 
 main = Blueprint('main', __name__)
 
@@ -12,7 +11,20 @@ main = Blueprint('main', __name__)
 @login_required
 def index():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, comment_form=CommentForm())
+
+@main.route('/post/<int:post_id>', methods=['GET', 'POST'])
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    form = CommentForm()
+    if form.validate_on_submit() and current_user.is_authenticated:
+        comment = Comment(body=form.body.data, author=current_user, post=post)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been added.')
+        return redirect(url_for('main.post', post_id=post_id))
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.desc()).all()
+    return render_template('post.html', post=post, comments=comments, form=form)
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -62,5 +74,3 @@ def upload():
         flash('Your post has been uploaded successfully!')
         return redirect(url_for('main.index'))
     return 'Something went wrong', 400
-
-# Make sure to import this routes module in your app/__init__.py and register the blueprint.
