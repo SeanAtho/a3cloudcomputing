@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}{{ post.author.username }}'s Post{% endblock %}
+
 {% block content %}
 <main class="post-detail">
     <article aria-label="Post Content">
@@ -9,6 +10,26 @@
         <p>{{ post.body }}</p>
         <time datetime="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%b %d, %Y at %H:%M') }}</time>
     </article>
+
+    <!-- Dropzone Form for File Uploads -->
+    <section class="file-upload">
+        <h3>Upload Related Files</h3>
+        <form action="{{ url_for('upload', post_id=post.id) }}" class="dropzone" id="post-file-dropzone">
+            <!-- Dropzone will automatically append file input fields here -->
+        </form>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js"></script>
+        <script>
+        Dropzone.options.postFileDropzone = {
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            acceptedFiles: "image/*, .pdf",
+            dictDefaultMessage: "Drag files here or click to upload",
+        };
+        </script>
+    </section>
+
+    <!-- Comments Section -->
     <aside aria-label="Comments Section">
         <h3>Comments:</h3>
         {% if comments %}

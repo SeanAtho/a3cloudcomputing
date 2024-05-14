@@ -1,8 +1,6 @@
-from flask import current_app
-from flask import render_template, flash, redirect, url_for, request, Blueprint
+from flask import current_app, render_template, flash, redirect, url_for, request, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
-from werkzeug.urls import url_parse
-from app import db, photos
+from app import db
 from app.models import User, Post, Comment
 from app.forms import RegistrationForm, LoginForm, CommentForm
 
@@ -64,28 +62,20 @@ def logout():
 @main.route('/upload', methods=['POST'])
 @login_required
 def upload():
-    if 'photo' not in request.files:
-        flash('No file part', 'error')
+    if 'file' not in request.files:
+        flash('No file part found. Please select a file.', 'error')
         return redirect(request.url)
-    file = request.files['photo']
-    if file.filename == '':
-        flash('No selected file', 'error')
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
-        filename = photos.save(file)
-        url = photos.url(filename)
-        new_post = Post(body=request.form['body'], image_url=url, author=current_user)
-        try:
-            db.session.add(new_post)
-            db.session.commit()
-            flash('Your post has been uploaded successfully!', 'success')
-        except Exception as e:
-            db.session.rollback()
-            flash('An error occurred while uploading your post.', 'error')
-            current_app.logger.error(f'Error uploading post: {e}')
+    file = request.files.get('file')  # Adjusting for Flask-Dropzone
+    if file and file.filename:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        flash('Your file has been uploaded successfully!', 'success')
     else:
-        flash('Invalid file type.', 'error')
+        flash('No file selected or invalid file type.', 'error')
     return redirect(url_for('main.index'))
 
+# Helper function, if still needed
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
