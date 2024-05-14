@@ -2,6 +2,12 @@
 {% block title %}Error{% endblock %}
 
 {% block content %}
-<h2>Error</h2>
-<p>Sorry, something went wrong.</p>
+<div class="error-container">
+    <h2>Error</h2>
+    <p>Oops! Something went wrong. We're working to fix it as quickly as possible.</p>
+    <p>Please try the following:</p>
+    <ul>
+        <li>Go back to the <a href="{{ url_for('main.index') }}">home page</a>.</li>
+    </ul>
+</div>
 {% endblock %}

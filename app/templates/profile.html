@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="user-profile">
+    <h2>{{ user.username }}'s Profile</h2>
+    <ul class="user-details">
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Member since:</strong> {{ user.created_at.strftime('%B %d, %Y') }}</li>
+    </ul>
+
+    {% if user == current_user %}
+    <a href="{{ url_for('edit_profile') }}" class="btn btn-info">Edit Profile</a>
+    {% endif %}
+    
+    <h3>Recent Posts</h3>
+    {% if user.posts %}
+    <div class="user-posts">
+        {% for post in user.posts %}
+        <div class="post">
+            <p>{{ post.body }}</p>
+            <small>Posted on {{ post.timestamp.strftime('%B %d, %Y at %H:%M') }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No posts to display.</p>
+    {% endif %}
+</div>
+{% endblock %}

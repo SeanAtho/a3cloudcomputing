@@ -1,23 +1,44 @@
 {% extends "layout.html" %}
+{% block title %}{{ post.author.username }}'s Post{% endblock %}
 {% block content %}
-<article>
-    <h2>{{ post.author.username }} says:</h2>
-    <p>{{ post.body }}</p>
-</article>
-<section>
-    <h3>Comments:</h3>
-    {% for comment in comments %}
-        <div>
-            <strong>{{ comment.author.username }}</strong>
-            <p>{{ comment.body }}</p>
-        </div>
-    {% endfor %}
-    <h4>Add a comment:</h4>
-    <form action="{{ url_for('comment', post_id=post.id) }}" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.body.label }}
-        {{ form.body(size=32) }}
-        {{ form.submit() }}
-    </form>
-</section>
+<main class="post-detail">
+    <article aria-label="Post Content">
+        <header>
+            <h2>{{ post.author.username }} says:</h2>
+        </header>
+        <p>{{ post.body }}</p>
+        <time datetime="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%b %d, %Y at %H:%M') }}</time>
+    </article>
+    <aside aria-label="Comments Section">
+        <h3>Comments:</h3>
+        {% if comments %}
+            <ul class="comments-list">
+                {% for comment in comments %}
+                    <li>
+                        <strong>{{ comment.author.username }}</strong> commented:
+                        <p>{{ comment.body }}</p>
+                        <time datetime="{{ comment.timestamp.isoformat() }}">{{ comment.timestamp.strftime('%b %d, %Y at %H:%M') }}</time>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+        {% if current_user.is_authenticated %}
+            <h4>Add a comment:</h4>
+            <form action="{{ url_for('comment', post_id=post.id) }}" method="post">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.body.label(class="form-control-label") }}
+                    {{ form.body(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        {% else %}
+            <p><a href="{{ url_for('main.login') }}">Log in</a> to add a comment.</p>
+        {% endif %}
+    </aside>
+</main>
 {% endblock %}

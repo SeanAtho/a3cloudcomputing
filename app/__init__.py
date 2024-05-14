@@ -31,4 +31,13 @@ def create_app(config_class='config.Config'):
     from .routes import main as main_routes
     app.register_blueprint(main_routes)
 
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        db.session.rollback()  # Rollback the database session in case of an error
+        return render_template('500.html'), 500
+
     return app
