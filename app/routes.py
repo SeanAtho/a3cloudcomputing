@@ -1,5 +1,7 @@
 from flask import current_app, render_template, flash, redirect, url_for, request, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
+from werkzeug.utils import secure_filename
+import os
 from app import db
 from app.models import User, Post, Comment
 from app.forms import RegistrationForm, LoginForm, CommentForm
@@ -65,8 +67,8 @@ def upload():
     if 'file' not in request.files:
         flash('No file part found. Please select a file.', 'error')
         return redirect(request.url)
-    file = request.files.get('file')  # Adjusting for Flask-Dropzone
-    if file and file.filename:
+    file = request.files.get('file')
+    if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
@@ -75,7 +77,6 @@ def upload():
         flash('No file selected or invalid file type.', 'error')
     return redirect(url_for('main.index'))
 
-# Helper function, if still needed
 def allowed_file(filename):
     allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions

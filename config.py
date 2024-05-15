@@ -2,21 +2,25 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'your_secret_key')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///myapp.db')  # Fallback to SQLite if no env var
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///myapp.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    UPLOAD_FOLDER = 'static/uploads/'  # Folder where uploaded files will be stored
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB upload limit to prevent large uploads
+    UPLOAD_FOLDER = 'static/uploads/'
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB upload limit
+
+    # AWS S3 configuration
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_ECHO = True  # Outputs the SQL that SQLAlchemy generates to the console, helpful for debugging
+    SQLALCHEMY_ECHO = True
 
 class ProductionConfig(Config):
     DEBUG = False
-    # Ensure the production database URI is configured through environment variables only
     SQLALCHEMY_DATABASE_URI = os.environ.get('PRODUCTION_DATABASE_URI')
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'  # Use an in-memory database for tests
-    WTF_CSRF_ENABLED = False  # Disable CSRF tokens in the form for easier testing
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'
+    WTF_CSRF_ENABLED = False
