@@ -1,8 +1,8 @@
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your_secret_key')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///myapp.db')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = 'static/uploads/'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB upload limit
@@ -18,7 +18,6 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PRODUCTION_DATABASE_URI')
 
 class TestingConfig(Config):
     TESTING = True
