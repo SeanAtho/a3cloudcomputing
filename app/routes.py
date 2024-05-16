@@ -14,6 +14,19 @@ def index():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', posts=posts, comment_form=CommentForm())
 
+@main.route('/create_post', methods=['POST'])
+@login_required
+def create_post():
+    post_body = request.form.get('post_body')
+    if post_body:
+        post = Post(body=post_body, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+    else:
+        flash('Post content cannot be empty.', 'error')
+    return redirect(url_for('main.index'))
+
 @main.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -56,17 +69,18 @@ def login():
             flash('Invalid email or password', 'error')
     return render_template('login.html', title='Sign In', form=form)
 
-@main.route('/logout')
+@main.route('/logout', methods=['POST'])
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
-@main.route('/upload', methods=['POST'])
+@main.route('/upload/<int:post_id>', methods=['POST'])
 @login_required
-def upload():
+def upload(post_id):
+    post = Post.query.get_or_404(post_id)
     if 'file' not in request.files:
         flash('No file part found. Please select a file.', 'error')
-        return redirect(request.url)
+        return redirect(url_for('main.post', post_id=post_id))
     file = request.files.get('file')
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
@@ -75,8 +89,14 @@ def upload():
         flash('Your file has been uploaded successfully!', 'success')
     else:
         flash('No file selected or invalid file type.', 'error')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.post', post_id=post_id))
+
+@main.route('/profile/<username>', methods=['GET'])
+@login_required
+def profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('profile.html', user=user)
 
 def allowed_file(filename):
-    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
