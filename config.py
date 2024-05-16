@@ -7,7 +7,10 @@ class Config:
     DROPZONE_UPLOAD_MULTIPLE = False  # Allow only single file upload
     DROPZONE_ALLOWED_FILE_TYPE = 'image'
     DROPZONE_MAX_FILE_SIZE = 3  # MB
+
+    # AWS S3 configuration
     S3_BUCKET = os.getenv('S3_BUCKET')
-    S3_KEY = os.getenv('S3_KEY')
-    S3_SECRET = os.getenv('S3_SECRET')
-    S3_LOCATION = f'http://{S3_BUCKET}.s3.amazonaws.com/'
+    S3_LOCATION = f'https://{S3_BUCKET}.s3.amazonaws.com/'
+
+    # AWS region
+    AWS_REGION = os.getenv('AWS_REGION', 'ap-southeast-2')  # Default to ap-southeast-2 if not set
