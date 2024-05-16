@@ -33,7 +33,7 @@ def create_app(config_class='config.Config'):
     dropzone.init_app(app)
 
     # Register blueprints
-    from .routes import main as main_routes
+    from app.routes import main as main_routes  # Ensure correct import
     app.register_blueprint(main_routes)
 
     # Global error handlers
@@ -47,7 +47,7 @@ def create_app(config_class='config.Config'):
         return render_template('500.html'), 500
 
     # Set up logging
-    if not app.debug:
+    if not app.debug and not app.testing:
         if not os.path.exists('logs'):
             os.mkdir('logs')
         file_handler = RotatingFileHandler('logs/microblog.log', maxBytes=10240, backupCount=10)
