@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_dropzone import Dropzone
 from flask_migrate import Migrate
-from config import Config
+from .config import Config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -20,11 +20,8 @@ def create_app():
     migrate.init_app(app, db)
 
     with app.app_context():
-        from . import routes, models
+        from .main.routes import main
+        app.register_blueprint(main)
         db.create_all()
-
-        # Register blueprints
-        from .routes import main as main_blueprint
-        app.register_blueprint(main_blueprint)
 
     return app

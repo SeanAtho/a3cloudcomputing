@@ -10,7 +10,7 @@ class Config:
 
     # AWS S3 configuration
     S3_BUCKET = os.getenv('S3_BUCKET')
-    S3_LOCATION = f'https://{S3_BUCKET}.s3.amazonaws.com/'
+    S3_LOCATION = f'https://{S3_BUCKET}.s3.{os.getenv("AWS_REGION", "ap-southeast-2")}.amazonaws.com/'
 
     # AWS region
     AWS_REGION = os.getenv('AWS_REGION', 'ap-southeast-2')  # Default to ap-southeast-2 if not set

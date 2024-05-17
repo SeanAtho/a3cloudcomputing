@@ -9,7 +9,6 @@ from werkzeug.utils import secure_filename
 import os
 import time
 
-# Define the blueprint
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -67,6 +66,8 @@ def new_post():
 def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = secure_filename(f"{current_user.username}_{int(time.time())}{f_ext}")
-    s3 = boto3.client('s3', aws_access_key_id=os.getenv('S3_KEY'), aws_secret_access_key=os.getenv('S3_SECRET'))
+    s3 = boto3.client('s3', region_name=os.getenv('AWS_REGION'), 
+                      aws_access_key_id=os.getenv('S3_KEY'), 
+                      aws_secret_access_key=os.getenv('S3_SECRET'))
     s3.upload_fileobj(form_picture, os.getenv('S3_BUCKET'), picture_fn)
     return f"{os.getenv('S3_LOCATION')}{picture_fn}"
