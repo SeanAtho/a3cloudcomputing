@@ -1,8 +1,8 @@
 import os
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://user:password@hostname:port/dbname')
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DROPZONE_UPLOAD_MULTIPLE = False  # Allow only single file upload
     DROPZONE_ALLOWED_FILE_TYPE = 'image'
