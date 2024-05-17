@@ -10,7 +10,9 @@ class Config:
 
     # AWS S3 configuration
     S3_BUCKET = os.getenv('S3_BUCKET')
-    S3_LOCATION = f'https://{S3_BUCKET}.s3.{os.getenv("AWS_REGION", "ap-southeast-2")}.amazonaws.com/'
-
-    # AWS region
     AWS_REGION = os.getenv('AWS_REGION', 'ap-southeast-2')  # Default to ap-southeast-2 if not set
+    S3_LOCATION = f'https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/'
+
+    # Additional AWS keys for boto3
+    AWS_ACCESS_KEY_ID = os.getenv('S3_KEY')
+    AWS_SECRET_ACCESS_KEY = os.getenv('S3_SECRET')

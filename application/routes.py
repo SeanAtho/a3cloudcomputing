@@ -1,13 +1,14 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request
 from flask_login import login_user, current_user, logout_user, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import boto3
+import os
+import time
+
 from . import db
 from .forms import RegistrationForm, LoginForm, PostForm
 from .models import User, Post
-from werkzeug.security import generate_password_hash, check_password_hash
-import boto3
-from werkzeug.utils import secure_filename
-import os
-import time
 
 main = Blueprint('main', __name__)
 
