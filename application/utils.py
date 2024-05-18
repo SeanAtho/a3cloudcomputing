@@ -1,5 +1,6 @@
+import hashlib
 import hmac
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 def safe_str_cmp(a, b):
     """Perform a constant time string comparison."""
@@ -7,8 +8,13 @@ def safe_str_cmp(a, b):
 
 def hash_password(password):
     """Hash a password for storing."""
-    return generate_password_hash(password)
+    salt = os.urandom(16)
+    pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    return salt + pwdhash
 
-def check_password(hashed_password, password):
+def check_password(stored_password, provided_password):
     """Verify a stored password against one provided by user."""
-    return check_password_hash(hashed_password, password)
+    salt = stored_password[:16]
+    stored_pwdhash = stored_password[16:]
+    pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
+    return hmac.compare_digest(stored_pwdhash, pwdhash)

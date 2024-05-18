@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
 import hmac
-from flask_login import utils
 import logging
 
 # Configure logging
@@ -14,9 +13,6 @@ logger = logging.getLogger(__name__)
 def safe_str_cmp(a, b):
     """Perform a constant time string comparison."""
     return hmac.compare_digest(a, b)
-
-utils.safe_str_cmp = safe_str_cmp
-logger.info("Patched flask_login.utils.safe_str_cmp with custom implementation.")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
