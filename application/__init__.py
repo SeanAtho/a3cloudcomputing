@@ -4,6 +4,11 @@ from flask_login import LoginManager
 import os
 import hmac
 from flask_login import utils
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Patch the safe_str_cmp function in flask_login.utils
 def safe_str_cmp(a, b):
@@ -11,6 +16,7 @@ def safe_str_cmp(a, b):
     return hmac.compare_digest(a, b)
 
 utils.safe_str_cmp = safe_str_cmp
+logger.info("Patched flask_login.utils.safe_str_cmp with custom implementation.")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
@@ -30,7 +36,7 @@ except AttributeError as e:
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-from application import routes, models, utils  # Ensure utils is imported
+from application import routes, models, utils
 
 def create_app():
     return app
