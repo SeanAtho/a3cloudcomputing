@@ -1,0 +1,8 @@
+branch-defaults:
+  default:
+    environment: your-env-name
+global:
+  application_name: your-app-name
+  default_region: your-region
+  profile: null
+  sc: git

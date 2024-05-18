@@ -1,27 +1,18 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_dropzone import Dropzone
-from flask_migrate import Migrate
-from .config import Config
+import os
 
-db = SQLAlchemy()
-login_manager = LoginManager()
-dropzone = Dropzone()
-migrate = Migrate()
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+from application import routes, models
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
-    db.init_app(app)
-    login_manager.init_app(app)
-    dropzone.init_app(app)
-    migrate.init_app(app, db)
-
-    with app.app_context():
-        from .main.routes import main
-        app.register_blueprint(main)
-        db.create_all()
-
     return app
