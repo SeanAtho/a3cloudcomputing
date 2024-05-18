@@ -21,7 +21,7 @@ except AttributeError as e:
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-from application import routes, models
+from application import routes, models, utils  # Ensure utils is imported
 
 def create_app():
     return app
