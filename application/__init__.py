@@ -2,6 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
+import hmac
+from flask_login import utils
+
+# Patch the safe_str_cmp function in flask_login.utils
+def safe_str_cmp(a, b):
+    """Perform a constant time string comparison."""
+    return hmac.compare_digest(a, b)
+
+utils.safe_str_cmp = safe_str_cmp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
