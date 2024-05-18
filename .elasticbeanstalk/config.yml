@@ -1,0 +1,8 @@
+branch-defaults:
+  default:
+    environment: flask-social-env
+global:
+  application_name: flask-social-app
+  default_region: ap-southeast-2
+  profile: null
+  sc: git
