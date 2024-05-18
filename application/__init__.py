@@ -8,7 +8,16 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+try:
+    db = SQLAlchemy(app)
+except AttributeError as e:
+    if "'sqlalchemy' has no attribute '__all__'" in str(e):
+        import sqlalchemy
+        sqlalchemy.__all__ = []
+        db = SQLAlchemy(app)
+    else:
+        raise e
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
