@@ -1,0 +1,33 @@
+/* static/style.css */
+
+body {
+    padding-top: 56px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.blockquote-footer {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.text-right img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+.rounded-circle {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}

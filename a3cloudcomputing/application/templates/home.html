@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Feed</h1>
+    {% for post in posts %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ post.title }}</h2>
+                <div class="card-text">{{ post.content|safe }}</div>
+                <footer class="blockquote-footer d-flex justify-content-between align-items-center">
+                    <span>
+                        Posted by <cite title="Source Title">{{ post.author.username }}</cite> on {{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </span>
+                    <img class="rounded-circle" src="{{ url_for('static', filename='profile_pics/' + (post.author.image_file if post.author.image_file else 'default.jpg')) }}" alt="Profile Picture" width="50" height="50">
+                </footer>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
