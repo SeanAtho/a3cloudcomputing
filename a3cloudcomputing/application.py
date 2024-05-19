@@ -2,11 +2,15 @@ from werkzeug.security import generate_password_hash
 from application import create_app, db
 from application.models import User
 
+# Create the Flask application instance
 app = create_app()
 
 def update_password_hashes():
     """
     Update password hashes for existing users if they are not in the correct format.
+    
+    This function iterates over all users in the database and updates their passwords
+    to the correct hash format if necessary.
     """
     with app.app_context():
         users = User.query.all()
@@ -23,6 +27,9 @@ def update_password_hashes():
 def before_first_request_func():
     """
     Run the password update logic before the first request.
+    
+    This function ensures that the password update is performed before the first request
+    is processed by the Flask application.
     """
     update_password_hashes()
 

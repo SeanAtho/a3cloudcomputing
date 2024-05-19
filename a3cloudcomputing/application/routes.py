@@ -19,6 +19,11 @@ logger.addHandler(handler)
 @app.route("/")
 @app.route("/home")
 def home():
+    """
+    Renders the home page with a list of posts.
+    Converts Markdown content to HTML.
+    Logs the access to the home page.
+    """
     posts = Post.query.order_by(Post.date_posted.desc()).all()
     for post in posts:
         post.content = markdown.markdown(post.content)
@@ -27,6 +32,12 @@ def home():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    """
+    Handles user registration.
+    If the user is already authenticated, redirects to the home page.
+    Validates the registration form and creates a new user if valid.
+    Logs the registration process and any errors.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
@@ -50,6 +61,12 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """
+    Handles user login.
+    If the user is already authenticated, redirects to the home page.
+    Validates the login form and logs in the user if valid.
+    Logs the login attempts and any failures.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
@@ -67,6 +84,10 @@ def login():
 
 @app.route("/logout")
 def logout():
+    """
+    Logs out the current user.
+    Logs the logout action.
+    """
     logger.info('User logged out: %s', current_user.username)
     logout_user()
     return redirect(url_for('home'))
@@ -74,6 +95,11 @@ def logout():
 @app.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
+    """
+    Handles the creation of a new post.
+    Validates the post form and saves the post if valid.
+    Logs the creation of the post.
+    """
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
@@ -87,6 +113,11 @@ def new_post():
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
+    """
+    Handles the user's account update.
+    Validates the update account form and updates the user's information if valid.
+    Logs the account update.
+    """
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
