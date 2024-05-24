@@ -23,7 +23,19 @@ logger.addHandler(file_handler)
 
 # Patch the safe_str_cmp function in flask_login.utils
 def safe_str_cmp(a, b):
-    """Perform a constant time string comparison."""
+    """
+    Perform a constant time string comparison.
+
+    This function is used to mitigate timing attacks by ensuring that string comparisons
+    take a constant amount of time regardless of the input.
+    
+    Args:
+        a (str): The first string to compare.
+        b (str): The second string to compare.
+    
+    Returns:
+        bool: True if the strings are equal, False otherwise.
+    """
     return hmac.compare_digest(a, b)
 
 # Initialize Flask app
@@ -60,5 +72,12 @@ from application import routes, models, utils
 logger.info('Flask Social App startup')
 
 def create_app():
-    """Factory function to create and configure the Flask app."""
+    """
+    Factory function to create and configure the Flask app.
+
+    This function initializes the Flask app, sets up configurations, and returns the app instance.
+    
+    Returns:
+        Flask: The configured Flask app instance.
+    """
     return app

@@ -22,6 +22,9 @@ def hash_password(password):
     
     Returns:
         str: The hashed password.
+    
+    Logs:
+        INFO: Password hashing operation.
     """
     hashed = generate_password_hash(password)
     logger.info("Password hashed")
@@ -37,6 +40,10 @@ def verify_password(stored_password, provided_password):
     
     Returns:
         bool: True if the password matches, False otherwise.
+    
+    Logs:
+        INFO: Successful password verification.
+        WARNING: Failed password verification.
     """
     result = check_password_hash(stored_password, provided_password)
     if result:
@@ -54,6 +61,17 @@ def save_picture(form_picture):
     
     Returns:
         str: The filename of the saved picture.
+    
+    Logs:
+        INFO: Picture save operation.
+    
+    Steps:
+        1. Generate a random filename for the picture to avoid conflicts.
+        2. Extract the file extension from the original filename.
+        3. Create the full path for saving the picture.
+        4. Ensure the target directory exists.
+        5. Open and resize the image to 125x125 pixels.
+        6. Save the resized image to the target path.
     """
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)

@@ -15,13 +15,29 @@ logger.addHandler(handler)
 def load_user(user_id):
     """
     Flask-Login user loader callback.
-    This function loads a user by their user_id.
+    
+    This function loads a user by their user_id. It is used by Flask-Login to manage
+    user sessions.
+    
+    Args:
+        user_id (int): The ID of the user to load.
+    
+    Returns:
+        User: The user object corresponding to the given user ID.
     """
     return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
     """
     User model representing a user in the application.
+    
+    Attributes:
+        id (int): The primary key for the user.
+        username (str): The username of the user, unique and not nullable.
+        email (str): The email of the user, unique and not nullable.
+        image_file (str): The filename of the user's profile image, with a default value.
+        password (str): The hashed password of the user.
+        posts (list): A list of posts authored by the user.
     """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -34,6 +50,10 @@ class User(db.Model, UserMixin):
     def __init__(self, **kwargs):
         """
         Initializes a new User instance.
+        
+        Args:
+            kwargs: The keyword arguments to initialize the user attributes.
+        
         Logs the creation of the user.
         """
         super(User, self).__init__(**kwargs)
@@ -42,6 +62,7 @@ class User(db.Model, UserMixin):
     def save(self):
         """
         Saves the user to the database.
+        
         Logs the save operation.
         """
         db.session.add(self)
@@ -51,6 +72,10 @@ class User(db.Model, UserMixin):
     def update(self, **kwargs):
         """
         Updates the user's attributes with the given keyword arguments.
+        
+        Args:
+            kwargs: The keyword arguments to update the user attributes.
+        
         Logs the update operation.
         """
         for key, value in kwargs.items():
@@ -61,6 +86,13 @@ class User(db.Model, UserMixin):
 class Post(db.Model):
     """
     Post model representing a blog post in the application.
+    
+    Attributes:
+        id (int): The primary key for the post.
+        title (str): The title of the post, not nullable.
+        date_posted (datetime): The date and time the post was created, with a default value.
+        content (str): The content of the post, not nullable.
+        user_id (int): The ID of the user who authored the post, foreign key to the User model.
     """
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
@@ -72,6 +104,10 @@ class Post(db.Model):
     def __init__(self, **kwargs):
         """
         Initializes a new Post instance.
+        
+        Args:
+            kwargs: The keyword arguments to initialize the post attributes.
+        
         Logs the creation of the post.
         """
         super(Post, self).__init__(**kwargs)
@@ -80,6 +116,7 @@ class Post(db.Model):
     def save(self):
         """
         Saves the post to the database.
+        
         Logs the save operation.
         """
         db.session.add(self)
@@ -89,6 +126,10 @@ class Post(db.Model):
     def update(self, **kwargs):
         """
         Updates the post's attributes with the given keyword arguments.
+        
+        Args:
+            kwargs: The keyword arguments to update the post attributes.
+        
         Logs the update operation.
         """
         for key, value in kwargs.items():
